@@ -58,7 +58,7 @@ class Calculator():
         """
         self.create_clear_button()
         self.create_equal_button()
-        self.create_root_button()
+        self.create_square_button()
         self.create_square_root_button()
 
     def create_display_labels(self):
@@ -140,20 +140,20 @@ class Calculator():
                             command=self.clear)
         button.grid(row=0, column=1, sticky=tk.NSEW)
 
-    def append_root(self):
-        self.current_expression += "**"
+    def append_square(self):
+        self.current_expression += "**2"
         self.result_expression += self.current_expression
         self.current_expression = ""
         self.update_current_label()
         self.update_result_label()
 
-    def create_root_button(self):
+    def create_square_button(self):
         """
         Creates the root button.
         """
         button = tk.Button(self.buttons_frame, text="x²", bg=OFF_WHITE,
                             fg=LABEL_COLOR, font=DEFAULT_FONT_STYLE, borderwidth=0,
-                            command=self.append_root)
+                            command=self.append_square)
         button.grid(row=0, column=2, sticky=tk.NSEW)
 
     def append_square_root(self):
