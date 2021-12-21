@@ -1,5 +1,5 @@
 import tkinter as tk
-from typing import final
+
 
 LIGHT_GRAY = "#F5F5F5"
 LABEL_COLOR = "#25265E"
@@ -51,6 +51,7 @@ class Calculator():
         self.create_digits_buttons()
         self.create_operator_buttons()
         self.create_special_buttons()
+        self.bind_keys()
 
     def create_special_buttons(self):
         """
@@ -82,6 +83,17 @@ class Calculator():
         frame = tk.Frame(self.window, height=221, bg=LIGHT_GRAY)
         frame.pack(expand=True, fill="both")
         return frame
+
+    def bind_keys(self):
+        """
+        Allows to use the keyboard. Does not work with every function,
+        only digits, basic operators and equal.
+        """
+        self.window.bind("<Return>", lambda event: self.evalute())
+        for digit in self.digits:
+            self.window.bind(str(digit), lambda event, d=digit: self.add_to_expression(d))
+        for operator in self.operations:
+            self.window.bind(operator, lambda event, op=operator: self.append_operator(op))
 
     def add_to_expression(self, value):
         """
@@ -141,6 +153,9 @@ class Calculator():
         button.grid(row=0, column=1, sticky=tk.NSEW)
 
     def append_square(self):
+        """
+        Appends the square function.
+        """
         self.current_expression += "**2"
         self.result_expression += self.current_expression
         self.current_expression = ""
@@ -157,6 +172,9 @@ class Calculator():
         button.grid(row=0, column=2, sticky=tk.NSEW)
 
     def append_square_root(self):
+        """
+        Appends the square root function
+        """
         self.current_expression += "**(1/2)"
         self.result_expression += self.current_expression
         self.current_expression = ""
@@ -182,7 +200,7 @@ class Calculator():
         try:
             self.current_expression = str(eval(self.result_expression))
             self.result_expression = ""
-        except Exception as e:
+        except ZeroDivisionError:
             self.current_expression = "Error"
         finally:
             self.update_current_label()
