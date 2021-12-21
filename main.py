@@ -1,4 +1,5 @@
 import tkinter as tk
+from typing import final
 
 LIGHT_GRAY = "#F5F5F5"
 LABEL_COLOR = "#25265E"
@@ -57,6 +58,8 @@ class Calculator():
         """
         self.create_clear_button()
         self.create_equal_button()
+        self.create_root_button()
+        self.create_square_root_button()
 
     def create_display_labels(self):
         """
@@ -135,7 +138,39 @@ class Calculator():
         button = tk.Button(self.buttons_frame, text="C", bg=OFF_WHITE,
                             fg=LABEL_COLOR, font=DEFAULT_FONT_STYLE, borderwidth=0,
                             command=self.clear)
-        button.grid(row=0, column=1, columnspan=3 ,sticky=tk.NSEW)
+        button.grid(row=0, column=1, sticky=tk.NSEW)
+
+    def append_root(self):
+        self.current_expression += "**"
+        self.result_expression += self.current_expression
+        self.current_expression = ""
+        self.update_current_label()
+        self.update_result_label()
+
+    def create_root_button(self):
+        """
+        Creates the root button.
+        """
+        button = tk.Button(self.buttons_frame, text="x²", bg=OFF_WHITE,
+                            fg=LABEL_COLOR, font=DEFAULT_FONT_STYLE, borderwidth=0,
+                            command=self.append_root)
+        button.grid(row=0, column=2, sticky=tk.NSEW)
+
+    def append_square_root(self):
+        self.current_expression += "**(1/2)"
+        self.result_expression += self.current_expression
+        self.current_expression = ""
+        self.update_current_label()
+        self.update_result_label()
+
+    def create_square_root_button(self):
+        """
+        Creates the root button.
+        """
+        button = tk.Button(self.buttons_frame, text="√x", bg=OFF_WHITE,
+                            fg=LABEL_COLOR, font=DEFAULT_FONT_STYLE, borderwidth=0,
+                            command=self.append_square_root)
+        button.grid(row=0, column=3, sticky=tk.NSEW)
 
     def evalute(self):
         """
@@ -144,9 +179,14 @@ class Calculator():
         self.result_expression += self.current_expression
         self.update_result_label
 
-        self.current_expression = str(eval(self.result_expression))
-        self.result_expression = ""
-        self.update_current_label()
+        try:
+            self.current_expression = str(eval(self.result_expression))
+            self.result_expression = ""
+        except Exception as e:
+            self.current_expression = "Error"
+        finally:
+            self.update_current_label()
+            self.current_expression = ""
 
     def create_equal_button(self):
         """
@@ -169,13 +209,16 @@ class Calculator():
         """
         Updates the result label
         """
-        self.result_label.config(text=self.result_expression)
+        expression = self.result_expression
+        for operator, symbol in self.operations.items():
+            expression = expression.replace(operator, f" {symbol} ")
+        self.result_label.config(text=expression)
 
     def update_current_label(self):
         """
         Updates the current label
         """
-        self.current_label.config(text=self.current_expression)
+        self.current_label.config(text=self.current_expression[:11])
 
     def run(self):
         """
